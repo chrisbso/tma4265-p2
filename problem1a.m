@@ -33,7 +33,7 @@ xlabel('t'); ylabel('N(t)');
 lgd = legend(h);
 set(findall(gcf,'-property','FontSize'),'FontSize',14);
 
-saveTightFigure(h,'problem1a.pdf');
+%saveTightFigure(h,'problem1a.pdf');
 
 
 end
