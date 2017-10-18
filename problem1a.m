@@ -1,4 +1,5 @@
-function y = problem1a
+function problem1a
+close all;
 lambda = 3;
 n=175;
 maxDays = 59;
@@ -25,8 +26,14 @@ for b = 1:100
 end
 
 
-sum(N(:,60)>175)/60;
+
 mean = sum(N)/b;
-plot(t,mean,'LineWidth',6)
+h = plot(t,mean,'LineWidth',6,'DisplayName','\Sigma N(t)/(# of iterations)','Color','b');
+xlabel('t'); ylabel('N(t)');
+lgd = legend(h);
+set(findall(gcf,'-property','FontSize'),'FontSize',14);
+
+saveTightFigure(h,'problem1a.pdf');
+
 
 end
