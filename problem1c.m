@@ -2,7 +2,7 @@ function problem1c
 maxDays = 59; %sets Tmax
 mu = -2;
 sigma = 1;
-bMax = 10; %maximum # of realizations
+bMax = 100; %maximum # of realizations
 lambda = 2 + cos(pi/182.5*[0:1:maxDays]); %inhomogenous
 
 
@@ -69,14 +69,14 @@ figure();
 %plot Z_avg for homogenous case
 subplot(2,1,1);
 plot(1:length(ZHom_avg),ZHom_avg);
-title('\lambda (t) = 3');
+title( ['\lambda(t) = 3,  ' num2str(bMax) ' realizations']);
 xlabel('N(t)'); ylabel('Z');
 xlim([0 length(ZHom_avg)]);
 
 %plot Z_avg for inhomogenous case
 subplot(2,1,2);
 plot(1:length(ZInhom_avg),ZInhom_avg);
-title('\lambda (t) = 2 + cos (t \pi / 182.5  ), thinned')
+ title(['\lambda(t) = 2 + cos (t \pi /182.5), thinned,   ' num2str(bMax) ' realizations']);
 xlabel('N(t)'); ylabel('Z');
 xlim([0 length(ZInhom_avg)]);
 
