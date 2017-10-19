@@ -2,7 +2,7 @@ function problem1c
 maxDays = 59; %sets Tmax
 mu = -2;
 sigma = 1;
-bMax = 100; %maximum # of realizations
+bMax = 10; %maximum # of realizations
 lambda = 2 + cos(pi/182.5*[0:1:maxDays]); %inhomogenous
 
 
@@ -63,21 +63,35 @@ countingInhom   = transpose(nonzeros(countingInhom));
 ZHom_avg      = ZHom_avg./countingHom;
 ZInhom_avg    = ZInhom_avg./countingInhom;
 
+%we comupte the best linear fit for ZHom_avg to find E[Z(N(t))]
+linearReg_ZHom      = transpose(1:length(ZHom_avg))    \transpose(ZHom_avg)
+linearReg_ZInhom    = transpose(1:length(ZInhom_avg))    \transpose(ZInhom_avg)
+
 close all;
 figure();
 
-%plot Z_avg for homogenous case
+%plot Z_avg and its linear fit for homogenous case
 subplot(2,1,1);
+hold on;
+grid on;
 plot(1:length(ZHom_avg),ZHom_avg);
-title( ['\lambda(t) = 3,  ' num2str(bMax) ' realizations']);
+plot(1:length(ZHom_avg),[1:length(ZHom_avg)]*linearReg_ZHom);
+title( ['\lambda(t) = 3,  averaged over ' num2str(bMax) ' realizations']);
 xlabel('N(t)'); ylabel('Z');
+legend('Z(N(t)) averaged over all realizations',['Simulated expected value E[Z(N(t))] = ' num2str(linearReg_ZHom,'%.3f') '\cdot N(t)']);
 xlim([0 length(ZHom_avg)]);
 
-%plot Z_avg for inhomogenous case
+%plot Z_avg and its linear fit for inhomogenous case
 subplot(2,1,2);
+hold on;
+grid on;
 plot(1:length(ZInhom_avg),ZInhom_avg);
- title(['\lambda(t) = 2 + cos (t \pi /182.5), thinned,   ' num2str(bMax) ' realizations']);
+plot(1:length(ZInhom_avg),[1:length(ZInhom_avg)]*linearReg_ZInhom);
+title(['\lambda(t) = 2 + cos (t \pi /182.5), thinned,   averaged over ' num2str(bMax) ' realizations']);
+legend('Z(N(t)) averaged over all realizations',['Simulated expected value E[Z(N(t))] = ' num2str(linearReg_ZInhom,'%.3f') '\cdot N(t)']);
 xlabel('N(t)'); ylabel('Z');
 xlim([0 length(ZInhom_avg)]);
 
+%adjust FontSize
+set(findall(gcf,'-property','FontSize'),'FontSize',14);
 end

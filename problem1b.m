@@ -2,25 +2,34 @@ function problem1b
 close all;
 maxDays = 59;
 bMax = 100;
+n = 175;
+P = 0;
+
+lambdaInhom = 2 + cos(pi/182.5*[0:1:(maxDays-1)]);
+lambdaMax = max(lambdaInhom);
+
+%Caluclate P(N(59<=175)), used for later when 1-P is calculated.
+for i = 0:n
+    P = P + exp(i*log(lambdaInhom(end)*maxDays)-lambdaInhom(end)*maxDays-gammaln(i+1));
+end
 
 %plot the inhomogenous intensity
-lambdaInhom = 2 + cos(pi/182.5*[0:1:maxDays]);
 figure(1);
-plot([0:1:maxDays], lambdaInhom);
+plot([0:1:maxDays-1], lambdaInhom);
+grid on;
 title('\lambda(t) = 2 + cos (t \pi /182.5)');
 xlabel('t');ylabel('\lambda(t)');
+set(findall(gcf,'-property','FontSize'),'FontSize',14);
 
 %initialize variables for plotting means
-meanHom = 0;
-meanInhom = 0;
 NtHom = zeros(1,bMax);
 NtInhom = zeros(1,bMax);
 figure(2);
 
 for b = 1:bMax
+    
     %simulate arrival times
-    lambdaMax = max(lambdaInhom);
-    NtHom(b) = poissrnd(lambdaMax*maxDays);
+    NtHom(b) = poissrnd(max(lambdaInhom)*maxDays);
     tHom = sort(maxDays*rand(NtHom(b),1));
     
     
@@ -49,6 +58,9 @@ for b = 1:bMax
     plot(tInhom,[1:NtInhom(b)]);
     
 end
+    %find percentage of realizations giving N(59)>175
+    moreThan175Claims = sum(NtInhom>175)/bMax;
+    
     %set plot labels
     subplot(2,2,1);
     title( ['\lambda(t) = 3,  ' num2str(bMax) ' realizations']);
@@ -66,13 +78,15 @@ end
     hold on;
     grid on;
     title('\Sigma N(t)/(# of iterations)');
-    plot([0 maxDays],[0 meanHom],'LineWidth',3,'DisplayName','\lambda(t) = 3');
-    plot([0 maxDays],[0 meanInhom],'LineWidth',3,'DisplayName','\lambda(t) = 2 + cos (t \pi /182.5), thinned');
+    plot([0 maxDays-1],[0 meanHom],'LineWidth',3,'DisplayName','\lambda(t) = 3');
+    plot([0 maxDays-1],[0 meanInhom],'LineWidth',3,'DisplayName','\lambda(t) = 2 + cos (t \pi /182.5), thinned');
     xlabel('t');ylabel('N(t)');
     legend('show');
     
     %adjust FontSize
     set(findall(gcf,'-property','FontSize'),'FontSize',14);
    
+    fprintf('Out of %d realizations,\n',bMax);
+    fprintf('N(t=59)>175 was achieved for \n %.1f%% of realizations. For comparison, \nP([N(59)>175]) = \n %.1f%%\n',moreThan175Claims*100,(1-P)*100);
 
 end
