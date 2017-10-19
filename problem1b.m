@@ -1,21 +1,18 @@
 function problem1b
 close all;
 maxDays = 59;
-bMax = 100;
+bMax = 10000;
 n = 175;
 P = 0;
 
-lambdaInhom = 2 + cos(pi/182.5*[0:1:(maxDays-1)]);
+lambdaInhom = 2 + cos(pi/182.5*[0:1:maxDays]);
 lambdaMax = max(lambdaInhom);
 
-%Caluclate P(N(59<=175)), used for later when 1-P is calculated.
-for i = 0:n
-    P = P + exp(i*log(lambdaInhom(end)*maxDays)-lambdaInhom(end)*maxDays-gammaln(i+1));
-end
+P = 1-poisscdf(n,lambdaInhom(end)*maxDays)
 
 %plot the inhomogenous intensity
 figure(1);
-plot([0:1:maxDays-1], lambdaInhom);
+plot([0:1:maxDays], lambdaInhom);
 grid on;
 title('\lambda(t) = 2 + cos (t \pi /182.5)');
 xlabel('t');ylabel('\lambda(t)');
@@ -24,13 +21,13 @@ set(findall(gcf,'-property','FontSize'),'FontSize',14);
 %initialize variables for plotting means
 NtHom = zeros(1,bMax);
 NtInhom = zeros(1,bMax);
-figure(2);
 
+figure(2);
 for b = 1:bMax
     
     %simulate arrival times
-    NtHom(b) = poissrnd(max(lambdaInhom)*maxDays);
-    tHom = sort(maxDays*rand(NtHom(b),1));
+    NtHom(b) = poissrnd(lambdaInhom(end)*maxDays);
+    tHom = sort(maxDays*rand(1,NtHom(b)));
     
     
     %plot N(t) for homogenous intensity
@@ -43,10 +40,10 @@ for b = 1:bMax
     count = 0;
     tInhom = [];
     for i = 1:NtHom(b)
-        accRate = (2+cos(pi/182.5*tHom(i,1)))/lambdaMax;
+        accRate = (2+cos(pi/182.5*tHom(i)))/lambdaMax;
         if accRate > rand
             count = count + 1;
-            tInhom = [tInhom tHom(i,1)];
+            tInhom = [tInhom tHom(i)];
         end
     end
     NtInhom(b) = count;
@@ -78,8 +75,8 @@ end
     hold on;
     grid on;
     title('\Sigma N(t)/(# of iterations)');
-    plot([0 maxDays-1],[0 meanHom],'LineWidth',3,'DisplayName','\lambda(t) = 3');
-    plot([0 maxDays-1],[0 meanInhom],'LineWidth',3,'DisplayName','\lambda(t) = 2 + cos (t \pi /182.5), thinned');
+    plot([0 maxDays],[0 meanHom],'LineWidth',3,'DisplayName','\lambda(t) = 3');
+    plot([0 maxDays],[0 meanInhom],'LineWidth',3,'DisplayName','\lambda(t) = 2 + cos (t \pi /182.5), thinned');
     xlabel('t');ylabel('N(t)');
     legend('show');
     
@@ -87,6 +84,6 @@ end
     set(findall(gcf,'-property','FontSize'),'FontSize',14);
    
     fprintf('Out of %d realizations,\n',bMax);
-    fprintf('N(t=59)>175 was achieved for \n %.1f%% of realizations. For comparison, \nP([N(59)>175]) = \n %.1f%%\n',moreThan175Claims*100,(1-P)*100);
+    fprintf('N(t=59)>175 was achieved for \n %.1f%% of realizations. For comparison, \nP([N(59)>175]) = \n %.1f%%\n',moreThan175Claims*100,P*100);
 
 end
