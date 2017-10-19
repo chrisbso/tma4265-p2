@@ -1,14 +1,14 @@
 function problem1b
 close all;
 maxDays = 59;
-bMax = 100;
+bMax = 1000;
 n = 175;
 P = 0;
 
 lambdaInhom = 2 + cos(pi/182.5*[0:1:maxDays]);
 lambdaMax = max(lambdaInhom);
 
-P = 1-poisscdf(n,lambdaInhom(end)*maxDays)
+P = 1-poisscdf(n,lambdaInhom(end)*maxDays);
 
 %plot the inhomogenous intensity
 figure(1);
@@ -21,9 +21,7 @@ set(findall(gcf,'-property','FontSize'),'FontSize',14);
 %initialize variables for plotting means
 NtHom = zeros(1,bMax);
 NtInhom = zeros(1,bMax);
-tHomEnd = zeros(1,bMax);
-tInhomEnd = zeros(1,bMax);
-
+moreThan175Claims = 0;
 figure(2);
 for b = 1:bMax
     
@@ -48,7 +46,6 @@ for b = 1:bMax
             tInhom = [tInhom tHom(i)];
         end
     end
-    tInhomEnd(b) = tInhom(end);
     NtInhom(b) = count;
     
     %plot N(t) for inhomogenous (thinned)
@@ -57,16 +54,14 @@ for b = 1:bMax
     grid on;
     plot(tInhom,[1:NtInhom(b)]);
     
+    if poissrnd(lambdaInhom(end)*maxDays)>n
+        moreThan175Claims = moreThan175Claims + 1;
+    end
+    
 end
     %find percentage of realizations giving N(59)>175
-   moreThan175Claims = 0;
-   for i = 1:length(NtInhom)
-       if (NtInhom(i)>175) && (tInhomEnd(i) > maxDays-0.01)
-        moreThan175Claims = moreThan175Claims + 1;
-       end
-   end
    moreThan175Claims = moreThan175Claims/bMax;
-    
+   
     %set plot labels
     subplot(2,2,1);
     title( ['\lambda(t) = 3,  ' num2str(bMax) ' realizations']);
