@@ -1,7 +1,7 @@
 function problem1b
 close all;
 maxDays = 59;
-bMax = 10000;
+bMax = 100;
 n = 175;
 P = 0;
 
@@ -21,6 +21,8 @@ set(findall(gcf,'-property','FontSize'),'FontSize',14);
 %initialize variables for plotting means
 NtHom = zeros(1,bMax);
 NtInhom = zeros(1,bMax);
+tHomEnd = zeros(1,bMax);
+tInhomEnd = zeros(1,bMax);
 
 figure(2);
 for b = 1:bMax
@@ -46,6 +48,7 @@ for b = 1:bMax
             tInhom = [tInhom tHom(i)];
         end
     end
+    tInhomEnd(b) = tInhom(end);
     NtInhom(b) = count;
     
     %plot N(t) for inhomogenous (thinned)
@@ -56,7 +59,13 @@ for b = 1:bMax
     
 end
     %find percentage of realizations giving N(59)>175
-    moreThan175Claims = sum(NtInhom>175)/bMax;
+   moreThan175Claims = 0;
+   for i = 1:length(NtInhom)
+       if (NtInhom(i)>175) && (tInhomEnd(i) > maxDays-0.01)
+        moreThan175Claims = moreThan175Claims + 1;
+       end
+   end
+   moreThan175Claims = moreThan175Claims/bMax;
     
     %set plot labels
     subplot(2,2,1);
