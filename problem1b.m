@@ -26,7 +26,7 @@ figure(2);
 for b = 1:bMax
     
     %simulate arrival times
-    NtHom(b) = poissrnd(lambdaInhom(end)*maxDays);
+    NtHom(b) = poissrnd(lambdaMax*maxDays);
     tHom = sort(maxDays*rand(1,NtHom(b)));
     
     
