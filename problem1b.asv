@@ -46,10 +46,8 @@ for b = 1:bMax
             tInhom = [tInhom tHom(i)];
         end
     end
-    NtInhom(b) = count;
-    
-    %%NOTE: this has to be included as choosing T_i = maxDays*rand() will
-    %%never give T_max == maxDays
+    NtInhom(thb) = count;
+    %%NOTE: 
     N_maxDays_Inhom(b) = poissrnd(lambdaInhom(end)*maxDays);
     
     %plot N(t) for inhomogenous (thinned)
