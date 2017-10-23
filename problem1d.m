@@ -9,7 +9,7 @@ lambda = 2 + cos(pi/182.5*[0:1:maxDays]); %inhomogenous
 ZHom_avg = 0;          %%for calucalating average ZHom;
 ZInhom_avg = 0;         %% for calculating average ZInhom;
 cHom = zeros(1,bMax);
-cInhom = zeros(1,bMax);
+zInhom = zeros(1,bMax);
 ZHom = zeros(1,bMax);
 ZInhom = zeros(1,bMax);
 for b = 1:bMax
@@ -44,8 +44,7 @@ for b = 1:bMax
     end
     ZInhom_avg = ZInhom_avg + ZInhom(b);
     
-    cHom(b) = ZHom;
-    cInhom(b) = ZInhom;
+
     
 end
 ZHom = sort(ZHom);
@@ -59,10 +58,10 @@ ZInhom_avg    = sum(ZInhom_avg)/bMax;
 fprintf('The expected value of Z_disc is');
 fprintf('\n %.3f mill. kr. \t for the homogenous case, and\n %.3f mill. kr.\t for the inhomogenous case\n',ZHom_avg, ZInhom_avg);
 
-cHom=max(sort(cHom(1:end-(bMax*0.05))));
-cInhom=max(sort(cInhom(1:end-(bMax*0.05))));
+ZHom=max(sort(ZHom(1:end-(bMax*0.05))));
+ZInhom=max(sort(ZInhom(1:end-(bMax*0.05))));
 
 fprintf('The capital needed to cover claims with 95 percent certainty');
-fprintf('\n %.3f mill. kr. \t for the homogenous case \n %.3f mill. kr.\t for the inhomogenous case\n',cHom, cInhom);
+fprintf('\n %.3f mill. kr. \t for the homogenous case \n %.3f mill. kr.\t for the inhomogenous case\n',ZHom, ZInhom);
 
 end
