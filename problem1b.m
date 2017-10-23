@@ -3,12 +3,11 @@ close all;
 maxDays = 59;
 bMax = 100;
 n = 175;
-P = 0;
 
 lambdaInhom = 2 + cos(pi/182.5*[0:1:maxDays]);
 lambdaMax = max(lambdaInhom);
 
-P = 1-poisscdf(n,lambdaInhom(end)*maxDays)
+P = 1-poisscdf(n,lambdaInhom(end)*maxDays);
 
 %plot the inhomogenous intensity
 figure(1);
@@ -21,9 +20,8 @@ set(findall(gcf,'-property','FontSize'),'FontSize',14);
 %initialize variables for plotting means
 NtHom = zeros(1,bMax);
 NtInhom = zeros(1,bMax);
-tHomEnd = zeros(1,bMax);
-tInhomEnd = zeros(1,bMax);
-
+N_maxDays_Inhom = zeros(1,bMax);
+moreThan_n_Claims = 0;
 figure(2);
 for b = 1:bMax
     
@@ -48,8 +46,11 @@ for b = 1:bMax
             tInhom = [tInhom tHom(i)];
         end
     end
-    tInhomEnd(b) = tInhom(end);
     NtInhom(b) = count;
+    
+    %%NOTE: this has to be included as choosing T_i = maxDays*rand() will
+    %%never give T_max == maxDays
+    N_maxDays_Inhom(b) = poissrnd(lambdaInhom(end)*maxDays);
     
     %plot N(t) for inhomogenous (thinned)
     subplot(2,2,3);
@@ -57,16 +58,14 @@ for b = 1:bMax
     grid on;
     plot(tInhom,[1:NtInhom(b)]);
     
-end
-    %find percentage of realizations giving N(59)>175
-   moreThan175Claims = 0;
-   for i = 1:length(NtInhom)
-       if (NtInhom(i)>175) && (tInhomEnd(i) > maxDays-0.01)
-        moreThan175Claims = moreThan175Claims + 1;
-       end
-   end
-   moreThan175Claims = moreThan175Claims/bMax;
+    if N_maxDays_Inhom(b)>n
+        moreThan_n_Claims = moreThan_n_Claims + 1;
+    end
     
+end
+    %find percentage of realizations giving N(59)>n==175
+   moreThan_n_Claims = moreThan_n_Claims/bMax;
+   
     %set plot labels
     subplot(2,2,1);
     title( ['\lambda(t) = 3,  ' num2str(bMax) ' realizations']);
@@ -78,8 +77,8 @@ end
     xlabel('t');ylabel('N(t)');
     
     %plot means and set labels
-    meanHom = sum(NtHom)/b;
-    meanInhom = sum(NtInhom)/b;
+    meanHom = sum(NtHom)/bMax;
+    meanInhom = sum(NtInhom)/bMax;
     subplot(2,2,[2 4]);
     hold on;
     grid on;
@@ -93,6 +92,6 @@ end
     set(findall(gcf,'-property','FontSize'),'FontSize',14);
    
     fprintf('Out of %d realizations,\n',bMax);
-    fprintf('N(t=59)>175 was achieved for \n %.1f%% of realizations. For comparison, \nP([N(59)>175]) = \n %.1f%%\n',moreThan175Claims*100,P*100);
+    fprintf('N(t=59)>%d  was achieved for \n %.1f%% of realizations. For comparison, \nP([N(59)>175]) = \n %.1f%%\n',n,moreThan_n_Claims*100,P*100);
 
 end
