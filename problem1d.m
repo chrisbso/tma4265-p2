@@ -6,8 +6,10 @@ sigma = 1;
 bMax = 200; %maximum # of realizations
 lambda = 2 + cos(pi/182.5*[0:1:maxDays]); %inhomogenous
 
-ZHom_avg = 0;           %%for calucalating average ZHom;
+ZHom_avg = 0;          %%for calucalating average ZHom;
 ZInhom_avg = 0;         %% for calculating average ZInhom;
+cHom = zeros(1,bMax);
+cInhom = zeros(1,bMax);
 for b = 1:bMax
     %sample from max rate process
     lambdaMax   = max(lambda);
@@ -42,16 +44,22 @@ for b = 1:bMax
     end
     ZInhom_avg = ZInhom_avg + ZInhom;
     
+    cHom(b) = ZHom;
+    cInhom(b) = ZInhom;
     
 end
 
 %now that the sums are complete, we average them over # of iterations
-ZHom_avg      = ZHom_avg/bMax;
-ZInhom_avg    = ZInhom_avg/bMax;
+ZHom_avg      = sum(ZHom_avg)/bMax;
+ZInhom_avg    = sum(ZInhom_avg)/bMax;
 
 fprintf('The expected value of Z_disc is');
 fprintf('\n %.3f mill. kr. \t for the homogenous case, and\n %.3f mill. kr.\t for the inhomogenous case\n',ZHom_avg, ZInhom_avg);
 
+cHom=max(sort(cHom(1:end-(bMax*0.05))));
+cInhom=max(sort(cInhom(1:end-(bMax*0.05))));
 
+fprintf('The capital needed to cover claims with 95 percent certainty');
+fprintf('\n %.3f mill. kr. \t for the homogenous case \n %.3f mill. kr.\t for the inhomogenous case\n',cHom, cInhom);
 
 end
