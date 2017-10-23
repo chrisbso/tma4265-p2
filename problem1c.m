@@ -2,7 +2,7 @@ function problem1c
 maxDays = 59; %sets Tmax
 mu = -2;
 sigma = 1;
-bMax = 10; %maximum # of realizations
+bMax = 100; %maximum # of realizations
 lambda = 2 + cos(pi/182.5*[0:1:maxDays]); %inhomogenous
 
 
@@ -10,12 +10,16 @@ countingHom = zeros(1,10000); %% since each realization has different lengths, o
 countingInhom = zeros(1,10000);
 ZHom_avg = zeros(1,10000); %%for calucalating average ZHom;
 ZInhom_avg = zeros(1,10000); %% for calculating average ZInhom;
+ZHom2 = zeros(1,bMax);
 for b = 1:bMax
     %sample from max rate process
     lambdaMax   = max(lambda);
     NtHom       = poissrnd(lambdaMax*maxDays);
     tHom        = sort(maxDays*rand(NtHom,1)); %simulate arrival times
     
+    for i = 1:NtHom
+       ZHom2(b) = ZHom2(b) + lognrnd(mu,sigma);
+    end
     
     %thinning, with requirement rand() < lambda(T_i)/lambdaMax, 0 < rand() < 1
     tInhom  = [];
@@ -66,6 +70,9 @@ ZInhom_avg    = ZInhom_avg./countingInhom;
 %we comupte the best linear fit for ZHom_avg to find E[Z(N(t))]
 linearReg_ZHom      = transpose(1:length(ZHom_avg))    \transpose(ZHom_avg)
 linearReg_ZInhom    = transpose(1:length(ZInhom_avg))    \transpose(ZInhom_avg)
+
+ZHom2_avg = sum(ZHom2)/bMax
+ZHom2_var = 1/bMax*sum((ZHom2-ZHom2_avg).^2)
 
 close all;
 figure();
