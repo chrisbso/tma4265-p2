@@ -85,9 +85,8 @@ end
     title('\Sigma N(t)/(# of iterations)');
     h1 = plot([0 maxDays],[0 meanHom],'LineWidth',3,'DisplayName','\lambda(t) = 3');
     h2 = plot([0 maxDays],[0 meanInhom],'LineWidth',3,'DisplayName','\lambda(t) = 2 + cos (t \pi /182.5), thinned');
-    h3 = plot([maxDays,maxDays],[0 175],'b--');
-    h4 = plot([0 maxDays], [175 175],'b--');
-    legend([h1 h2]);
+    legend([h1 h3]);
+    plot([maxDays,maxDays],[0 175],'b--');
     xlabel('t');ylabel('N(t)');
     
     
