@@ -58,8 +58,8 @@ ZInhom_avg    = sum(ZInhom_avg)/bMax;
 fprintf('The expected value of Z_disc is');
 fprintf('\n %.3f mill. kr. \t for the homogenous case, and\n %.3f mill. kr.\t for the inhomogenous case\n',ZHom_avg, ZInhom_avg);
 
-ZHom=max(sort(ZHom(1:end-(bMax*0.05))));
-ZInhom=max(sort(ZInhom(1:end-(bMax*0.05))));
+ZHom=max(sort(ZHom(1:end-floor((bMax*0.05)))));
+ZInhom=max(sort(ZInhom(1:end-floor((bMax*0.05)))));
 
 fprintf('The capital needed to cover claims with 95 percent certainty');
 fprintf('\n %.3f mill. kr. \t for the homogenous case \n %.3f mill. kr.\t for the inhomogenous case\n',ZHom, ZInhom);
